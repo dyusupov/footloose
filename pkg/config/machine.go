@@ -73,6 +73,35 @@ type Machine struct {
 	Backend string `json:"backend,omitempty"`
 	// Ignite specifies ignite-specific options
 	Ignite *Ignite `json:"ignite,omitempty"`
+	// Ignite specifies ignite-specific options
+	Docker *Docker `json:"docker,omitempty"`
+}
+
+func (m *Machine) DockerConfig() Docker {
+	i := Docker{}
+	if m.Docker != nil {
+		i = *m.Docker
+	}
+	if i.CPUs == 0.0 {
+		i.CPUs = 2.0
+	}
+	if len(i.Memory) == 0 {
+		i.Memory = "2GB"
+	}
+	if len(i.ReservedMemory) == 0 {
+		i.ReservedMemory = "1GB"
+	}
+	return i
+}
+
+// Docker holds the docker-specific configuration
+type Docker struct {
+	// CPUs specify the number of CPU cores to use. Default: 2
+	CPUs float64 `json:"cpus,omitempty"`
+	// Memory specifies the amount of RAM the VM should have. Default: 2GB
+	Memory string `json:"memory,omitempty"`
+	// Memory specifies the amount of RAM the VM should have. Default: 1GB
+	ReservedMemory string `json:"reservedMemory,omitempty"`
 }
 
 func (m *Machine) IgniteConfig() Ignite {
