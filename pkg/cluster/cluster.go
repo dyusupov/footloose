@@ -287,14 +287,23 @@ func (c *Cluster) CreateMachine(machine *Machine, i int) error {
 func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []string {
 	runArgs := []string{
 		"-it",
+		fmt.Sprintf("--cpus=%f", machine.spec.DockerConfig().CPUs),
+		fmt.Sprintf("--memory=%s", machine.spec.DockerConfig().Memory),
+		fmt.Sprintf("--memory-reservation=%s", machine.spec.DockerConfig().ReservedMemory),
 		"--label", "works.weave.owner=footloose",
 		"--label", "works.weave.cluster=" + c.spec.Cluster.Name,
 		"--name", name,
 		"--hostname", machine.Hostname(),
+		"--security-opt", "seccomp=unconfined",
+		"--security-opt", "apparmor=unconfined",
 		"--tmpfs", "/run",
-		"--tmpfs", "/run/lock",
-		"--tmpfs", "/tmp:exec,mode=777",
-		"-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro",
+		"--tmpfs", "/tmp",
+		"--userns=host",
+		"--restart=on-failure:1",
+		"-v", "/var/lib/containerd",
+		"-v", "/var/lib/kubelet",
+		"-v", "/var/log",
+//		"-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro",
 	}
 
 	for _, volume := range machine.spec.Volumes {
