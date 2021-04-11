@@ -50,7 +50,7 @@ func Run(image string, runArgs []string, containerArgs []string) (id string, err
 		return "", errors.New("failed to get container id, received no output from docker run")
 	}
 	if !containerIDRegex.MatchString(output[0]) {
-		return "", errors.Errorf("failed to get container id, output did not match: %v", output)
+		return "", errors.Errorf("failed to get container id cmd='%s', output did not match: %v", cmd, output)
 	}
 	return output[0], nil
 }

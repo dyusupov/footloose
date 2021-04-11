@@ -290,6 +290,7 @@ func (c *Cluster) createMachineRunArgs(machine *Machine, name string, i int) []s
 		fmt.Sprintf("--cpus=%f", machine.spec.DockerConfig().CPUs),
 		fmt.Sprintf("--memory=%s", machine.spec.DockerConfig().Memory),
 		fmt.Sprintf("--memory-reservation=%s", machine.spec.DockerConfig().ReservedMemory),
+		"--memory-swap", "-1",
 		"--label", "works.weave.owner=footloose",
 		"--label", "works.weave.cluster=" + c.spec.Cluster.Name,
 		"--name", name,
